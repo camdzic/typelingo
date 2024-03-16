@@ -1,0 +1,32 @@
+{
+  "name": "typelingo",
+  "version": "1.0.0",
+  "description": "Build and use fully type-safe translations in your app.",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc"
+  },
+  "author": "camdzic",
+  "keywords": [
+    "i18n",
+    "translations",
+    "localizations",
+    "typescript"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/camdzic/typelingo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/camdzic/typelingo/issues"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
