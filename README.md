@@ -65,14 +65,14 @@ const greet = typelingo
     ba: "Zdravo, {name}! Imaš {age} godina",
     de: "Hallo, {name}! Du bist {age} Jahre alt",
   })
-  .variation({ age }) => parseInt(age) > 18, {
+  .variation(({ age }) => parseInt(age) >= 18, {
     en: "Hello, {name}! You are an adult",
     ba: "Zdravo, {name}! Ti si odrastao",
     de: "Hallo, {name}! Du bist erwachsen",
   });
 
-console.log(greet.get({ name: "Aldin", age: "15" })); // Hello, Aldin! You are 15 years old
-console.log(greet.get({ name: "Aldin", age: "20" })); // Hello, Aldin! You are an adult
+console.log(greet.get({ name: "Aldin", age: 15 })); // Hello, Aldin! You are 15 years old
+console.log(greet.get({ name: "Aldin", age: 20 })); // Hello, Aldin! You are an adult
 ```
 
 ## Dynamic locale change
