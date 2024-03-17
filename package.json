@@ -1,6 +1,6 @@
 {
   "name": "typelingo",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Build and use fully type-safe translations in your app.",
   "license": "MIT",
   "scripts": {
