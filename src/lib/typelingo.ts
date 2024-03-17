@@ -1,4 +1,10 @@
-import { Locale, LocaleMessages, TypeLingoOptions } from "./types";
+import {
+  ExtractKeys,
+  Locale,
+  LocaleMessages,
+  MergeLocaleMessages,
+  TypeLingoOptions,
+} from "./types";
 
 export class TypeLingo<T extends Locale> {
   private locales: ReadonlyArray<T>;
@@ -17,7 +23,7 @@ export class TypeLingo<T extends Locale> {
     }
   }
 
-  create(messages: LocaleMessages<T>) {
+  create<Messages extends LocaleMessages<T>>(messages: Messages) {
     return new LocalizedMessage(messages, () => this.getCurrentLocale());
   }
 
@@ -26,31 +32,38 @@ export class TypeLingo<T extends Locale> {
   }
 }
 
-class LocalizedMessage<T extends Locale> {
-  private messages: LocaleMessages<T>;
+class LocalizedMessage<T extends Locale, Messages extends LocaleMessages<T>> {
+  private messages: Messages;
   private getCurrentLocale: () => T;
 
   private variations: Array<{
-    condition: (params: Record<string, any>) => boolean;
+    condition: (
+      params: Record<ExtractKeys<Messages[keyof Messages]>, any>,
+    ) => boolean;
     messages: LocaleMessages<T>;
   }>;
 
-  constructor(messages: LocaleMessages<T>, getCurrentLocale: () => T) {
+  constructor(messages: Messages, getCurrentLocale: () => T) {
     this.messages = messages;
     this.getCurrentLocale = getCurrentLocale;
 
     this.variations = [];
   }
 
-  variation(
-    condition: (params: Record<string, any>) => boolean,
-    messages: LocaleMessages<T>,
-  ) {
+  variation<M extends LocaleMessages<T>>(
+    condition: (
+      params: Record<ExtractKeys<Messages[keyof Messages]>, any>,
+    ) => boolean,
+    messages: M,
+  ): LocalizedMessage<T, MergeLocaleMessages<T, Messages, M>> {
     this.variations.push({ condition, messages });
-    return this;
+    return this as any;
   }
 
-  get(params: Record<string, any>, locale: T = this.getCurrentLocale()) {
+  get(
+    params: Record<ExtractKeys<Messages[keyof Messages]>, any>,
+    locale: T = this.getCurrentLocale(),
+  ) {
     const message = this.messages[locale];
 
     if (message) {
@@ -61,7 +74,7 @@ class LocalizedMessage<T extends Locale> {
           const variationMessage = variation.messages[locale];
 
           if (variationMessage) {
-            result = variationMessage;
+            result = variationMessage as Messages[T];
             break;
           }
         }
@@ -69,7 +82,10 @@ class LocalizedMessage<T extends Locale> {
 
       for (const key in params) {
         if (params.hasOwnProperty(key)) {
-          result = result.replace(`{${key}}`, params[key]);
+          result = result.replace(
+            `{${key}}`,
+            params[key as keyof typeof params],
+          ) as Messages[T];
         }
       }
 

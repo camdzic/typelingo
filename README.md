@@ -39,7 +39,7 @@ const greet = typelingo.create({
   en: "Hello",
   ba: "Zdravo",
   de: "Hallo",
-});
+} as const);
 
 console.log(greet.get({})); // Hello
 ```
@@ -51,7 +51,7 @@ const greet = typelingo.create({
   en: "Hello, {name}",
   ba: "Zdravo, {name}",
   de: "Hallo, {name}",
-});
+} as const);
 
 console.log(greet.get({ name: "Aldin" })); // Hello, Aldin
 ```
@@ -61,18 +61,18 @@ console.log(greet.get({ name: "Aldin" })); // Hello, Aldin
 ```typescript
 const greet = typelingo
   .create({
+    en: "Hello, {name}!",
+    ba: "Zdravo, {name}!",
+    de: "Hallo, {name}!",
+  } as const)
+  .variation(({ name }) => name === "Aldin", {
     en: "Hello, {name}! You are {age} years old",
-    ba: "Zdravo, {name}! Imaš {age} godina",
+    ba: "Zdravo, {name}! Ti imaš {age} godina",
     de: "Hallo, {name}! Du bist {age} Jahre alt",
-  })
-  .variation(({ age }) => parseInt(age) >= 18, {
-    en: "Hello, {name}! You are an adult",
-    ba: "Zdravo, {name}! Ti si odrastao",
-    de: "Hallo, {name}! Du bist erwachsen",
-  });
+  } as const);
 
-console.log(greet.get({ name: "Aldin", age: 15 })); // Hello, Aldin! You are 15 years old
-console.log(greet.get({ name: "Aldin", age: 20 })); // Hello, Aldin! You are an adult
+console.log(greet.get({ name: "John", age: 18 })); // Hello, John!
+console.log(greet.get({ name: "Aldin", age: 18 })); // Hello, Aldin! You are 18 years old
 ```
 
 ## Dynamic locale change
@@ -89,20 +89,20 @@ const typelingo = new TypeLingo({
 });
 
 const greet = typelingo.create({
-  en: "Hello, {name}",
-  ba: "Zdravo, {name}",
-  de: "Hallo, {name}",
-});
+  en: "Hello",
+  ba: "Zdravo",
+  de: "Hallo",
+} as const);
 
-console.log(greet.get({ name: "Aldin" })); // Hello, Aldin
+console.log(greet.get({})); // Hello
 
 typelingo.changeLocale("ba");
 
-console.log(greet.get({ name: "Aldin" })); // Zdravo, Aldin
+console.log(greet.get({})); // Zdravo
 ```
 
 Locales can also be passed as an parameter to the `get` method.
 
 ```typescript
-console.log(greet.get({ name: "Aldin" }, "de")); // Hallo, Aldin
+console.log(greet.get({}, "de")); // Hallo
 ```
