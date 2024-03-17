@@ -1,9 +1,5 @@
 import {
-  ExtractKeys,
-  Locale,
-  LocaleMessages,
-  MergeLocaleMessages,
-  TypeLingoOptions,
+    ExtractKeys, Locale, LocaleMessages, MergeLocaleMessages, TypeLingoOptions,
 } from "./types";
 
 export class TypeLingo<T extends Locale> {

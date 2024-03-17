@@ -106,3 +106,45 @@ Locales can also be passed as an parameter to the `get` method.
 ```typescript
 console.log(greet.get({}, "de")); // Hallo
 ```
+
+## Example on Discord Bot
+
+```typescript
+import { TypeLingo } from "typelingo";
+import { Client, Events, GatewayIntentBits } from "discord.js";
+
+const locales = ["en", "ba", "de"] as const;
+const currentLocale = "en";
+
+const typelingo = new TypeLingo({
+  locales,
+  currentLocale,
+});
+
+const client = new Client({
+  intents: [GatewayIntentBits.GuildMembers],
+});
+
+client.on(Events.GuildMemberAdd, (member) => {
+  const greet = typelingo
+    .create({
+      en: "Hello, {displayName}! Welcome to the {guildName} server!",
+      ba: "Zdravo, {displayName}! Dobrodošli na {guildName} server!",
+      de: "Hallo, {displayName}! Willkommen auf dem {guildName} Server!",
+    } as const)
+    .variation(({ displayName }) => displayName === "Aldin", {
+      en: "Hello, {displayName}! Welcome to the {guildName} server! You are special!",
+      ba: "Zdravo, {displayName}! Dobrodošli na {guildName} server! Ti si poseban!",
+      de: "Hallo, {displayName}! Willkommen auf dem {guildName} Server! Du bist speziell!",
+    } as const);
+
+  member.send({
+    content: greet.get({
+      displayName: member.user.displayName,
+      guildName: member.guild.name,
+    }),
+  });
+});
+
+client.login();
+```
